@@ -1,0 +1,120 @@
+#First boot script used at Normandale Community College
+
+#Flush Policy History for Computer in the JSS
+/usr/local/jamf/bin/jamf flushPolicyHistory
+
+
+#Rename HDD to 'Macintosh HD' if it is something different
+#!/bin/bash
+volumeName=$(diskutil info / | awk '/Volume Name/ {print substr ($0, index ($0,$3))}')
+echo "Current volume name: $volumeName"
+
+# If the volume is not named Macintosh HD
+if [ "$volumeName" != "Macintosh HD" ];then 
+    # Rename it
+	diskutil renameVolume "$volumeName" "Macintosh HD"
+	volumeName=$(diskutil info / | awk '/Volume Name/ {print substr ($0, index ($0,$3))}')
+	echo "Root volume is now named: $volumeName"
+	exit 0
+else
+    # Exit 1 because something went wrong
+    echo "Something went wrong."
+	exit 1
+fi
+
+#CHECK TO SEE IF IMAGING LAPTOP
+#This checks for Thunderbolt or USB over Ethrnet.
+
+#!/bin/sh
+# Checks to see if the Mac is either a MacBook Pro Retina or MacBook Air
+# If it's either of these machines, the script will then check for External Network Adapters
+# If either adapter is present, it will add the adapter to network services
+# Resolves the annoying issue with USB & Thunderbolt Ethernet adapters with Casper Imaging
+
+mbpr=`system_profiler SPHardwareDataType | awk '/Model Identifier/{print $3}' | cut -f1 -d ","`
+mba=`system_profiler SPHardwareDataType | awk '/Model Identifier/{print $3}' | cut -c-10`
+usbAdapter=`/usr/sbin/networksetup -listallhardwareports | grep "Hardware Port: USB Ethernet"`
+tbAdapter=`/usr/sbin/networksetup -listallhardwareports | grep "Hardware Port: Thunderbolt Ethernet"`
+
+/usr/sbin/networksetup -detectnewhardware
+
+if [[ $mbpr = "MacBookPro10" ]] || [[ $mbpr = "MacBookPro11" ]] || [[ $mbpr = "MacBookPro12" ]]|| [[ $mbpr = "MacBookPro13" ]]|| [[ $mbpr = "MacBookPro14" ]]|| [[ $mbpr = "MacBookPro15" ]]; then
+	if [ "$usbAdapter" != "" ]; then
+		/usr/sbin/networksetup -createnetworkservice USB\ Ethernet 'USB Ethernet'
+		echo "USB Ethernet added to Network Services"
+	else
+		echo "No USB Adapter connected"
+	fi
+	if [ "$tbAdapter" != "" ]; then
+		/usr/sbin/networksetup -createnetworkservice Thunderbolt\ Ethernet 'Thunderbolt Ethernet'
+		echo "Thunderbolt Ethernet added to Network Services"
+	else
+		echo "No Thunderbolt Adapter connected"
+	fi	
+elif [ $mba = "MacBookAir" ]; then
+	if [ "$usbAdapter" != "" ]; then
+		/usr/sbin/networksetup -createnetworkservice USB\ Ethernet 'USB Ethernet'
+		echo "USB Ethernet added to Network Services"
+	else
+		echo "No USB Adapter connected"
+	fi
+	if [ "$tbAdapter" != "" ]; then
+		/usr/sbin/networksetup -createnetworkservice Thunderbolt\ Ethernet 'Thunderbolt Ethernet'
+		echo "Thunderbolt Ethernet added to Network Services"
+	else
+		echo "No Thunderbolt Adapter connected"
+	fi
+else
+	echo "This machine does not use external network adapters"	
+fi
+
+exit 0
+
+
+#This sets the login window and screen saver preferences.
+defaults write /Library/Preferences/com.apple.loginwindow Hide500Users -bool YES
+defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array ardamin
+defaults write /Library/Preferences/com.apple.loginwindow ShutDownDisabledWhileLoggedIn -bool NO
+defaults write /Library/Preferences/com.apple.loginwindow RestartDisabledWhileLoggedIn -bool NO
+defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool YES
+
+# Disable Time Machine snapshots on local disk
+sudo tmutil disablelocal
+
+
+# Turn on and enable SSH for JAMF Client
+sudo JAMF startSSH
+sudo systemsetup -setremotelogin on
+
+#Disable Dashboard
+defaults write com.apple.dashboard mcx-disabled -boolean YES
+
+#Disable Printer Sharing
+cupsctl --no-share-printers
+ 
+# Turn off Automatic updates
+sudo softwareupdate --schedule off
+
+#In Yosemite: don't allow spam messages asking about Safari.app
+defaults write com.apple.coreservices.uiagent CSUIHasSafariBeenLaunched -bool YES
+defaults write com.apple.coreservices.uiagent CSUIRecommendSafariNextNotificationDate -date 2050-01-01T00:00:00Z
+defaults write com.apple.coreservices.uiagent CSUILastOSVersionWhereSafariRecommendationWasMade -float 10.99
+defaults write com.apple.Safari DefaultBrowserDateOfLastPrompt -date '2050-01-01T00:00:00Z'
+defaults write com.apple.Safari DefaultBrowserPromptingState -int 2
+
+#Remove Header and Footer from printing
+defaults write com.apple.Safari PrintHeadersAndFooters -bool false
+
+#Show scroll bars in finder
+defaults write NSGlobalDomain AppleShowScrollBars -string “Always”
+
+#Bypass checking MDM issue in 10.9
+
+if [[ "$OSVer" = "10.9"* ]]; then
+if [ -n "$HWType" ]; then
+    defaults write /Library/Preferences/com.apple.mdmclient BypassPreLoginCheck -bool YES
+fi
+fi
+
+#Normandale Community College
+#Information Technology Services
