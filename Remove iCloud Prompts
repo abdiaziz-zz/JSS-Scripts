@@ -1,0 +1,11 @@
+#Remove iCloud prompts in OS X 10.10 and 10.11
+#
+#Disable iCloud Prompts
+defaults write /System/Library/User\ Template/English.lproj/Library/Preferences/com.apple.SetupAssistant LastSeenCloudProductVersion -string 10.11.1
+defaults write /System/Library/User\ Template/English.lproj/Library/Preferences/com.apple.SetupAssistant DidSeeCloudSetup -bool YES
+defaults write /System/Library/User\ Template/English.lproj/Library/Preferences/com.apple.SetupAssistant GestureMovieSeen none
+defaults write /System/Library/User\ Template/English.lproj/Library/Preferences/com.apple.SetupAssistant LastSeenBuddyBuildVersion 10.11.1
+defaults write /System/Library/User\ Template/English.lproj/Library/Preferences/com.apple.SetupAssistant DidSeeSyncSetup -bool TRUE
+defaults write /System/Library/User\ Template/English.lproj/Library/Preferences/com.apple.SetupAssistant DidSeeSyncSetup2 -bool TRUE
+defaults write /System/Library/User\ Template/English.lproj/Library/Preferences/com.apple.SetupAssistant DidSeeiCloudSecuritySetup -bool TRUE
+echo "iCloud disabled." 
