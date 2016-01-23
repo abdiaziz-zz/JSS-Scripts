@@ -1,0 +1,3 @@
+#Grab logged in user information and report it to the JSS
+#
+if [ -z $3 ]; then currentUser=`stat -f '%Su' /dev/console`; else currentUser=$3; fi; jamf recon -endUsername $currentUser
