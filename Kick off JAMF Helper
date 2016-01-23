@@ -1,0 +1,3 @@
+#Kickstart JAMF Helper manually. Temporary fix for the inconsistency in Casper Imaging 9.81
+
+/usr/local/jamf/bin/jamf launchJAMFHelper -path '/Library/Application Support/JAMF/bin/jamfHelper.app'
