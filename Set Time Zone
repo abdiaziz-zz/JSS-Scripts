@@ -1,0 +1,61 @@
+#Set time Zone to American/Chicago
+#
+#
+#
+#
+# Author = Unknown
+#
+timeZone="America/Chicago"
+
+# CHECK TO SEE IF A VALUE WAS PASSED IN PARAMETER 4 AND, IF SO, ASSIGN TO "timeZone"
+
+if [ "$4" != "" ] && [ "$timeZone" == "" ]; then
+    timeZone=$4
+fi
+
+####################################################################################################
+# 
+# SCRIPT CONTENTS - DO NOT MODIFY BELOW THIS LINE
+#
+####################################################################################################
+
+OS=$(/usr/bin/defaults read /System/Library/CoreServices/SystemVersion ProductVersion | awk '{print substr($1,1)}')
+maj=$(/usr/bin/defaults read /System/Library/CoreServices/SystemVersion ProductVersion | awk '{print substr($1,1,2)}')
+ref=$(/usr/bin/defaults read /System/Library/CoreServices/SystemVersion ProductVersion | awk '{print substr($1,4,2)}' | tr -dc '0-9')
+
+if [ $maj -gt 10 ]; then
+  echo
+  echo "Check OS string format & OS X systemsetup utility for script compatibility with OS X versions higher than 10.x.x"
+  echo
+  exit
+fi
+
+if [ "$timeZone" != "" ]; then
+	if [ $ref -lt 5 ]; then
+		echo
+		echo "Setting time zone for OS X $OS..."
+		echo
+		/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Support/systemsetup -settimezone "$timeZone"
+		echo
+		/usr/bin/killall SystemUIServer
+		echo "Refreshing the clock in the Menu Bar..."
+		echo
+	else
+		echo
+		echo "Setting time zone for OS X $OS..."
+		echo
+		/usr/sbin/systemsetup -settimezone "$timeZone"
+		echo
+		/usr/bin/killall SystemUIServer
+		echo "Refreshing the clock in the Menu Bar..."
+		echo	
+	fi
+else
+   echo
+   echo "Error: The timeZone variable is not populated. Please specify a valid time zone. A list "
+   echo "of accepted time zone values can be generated using the following command in Terminal: "
+   echo
+   echo "     sudo systemsetup -listtimezones"
+   echo
+   exit
+fi
