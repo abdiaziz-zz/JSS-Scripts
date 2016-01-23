@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+#
+#  Script to delete local user data that has not been accessed in a given time
+#  period.
+#
+#  User data not stored in /Users is not effected.
+# Author = Unknown
+
+#----Variables----
+# DEFAULT VALUE FOR "AGE" IS SET HERE
+AGE= # Delete /Users/ folders inactive longer than this many days
+
+# CHECK TO SEE IF A VALUE WAS PASSED IN PARAMETER 4 AND, IF SO, ASSIGN TO "AGE"
+if [ "$4" != "" ]; then
+  AGE=$4
+fi
+
+KEEP=("/Users/Shared") # User folders you would like to bypass. Typically local users or admin accounts.
+#--End variables--
+
+
+### Delete Inactive Users ###
+if [[ ${UID} -ne 0 ]]; then
+  echo "$0 must be run as root."
+  exit 1
+fi
+
+USERLIST=$(/usr/bin/find /Users -type d -maxdepth 1 -mindepth 1 -not -name "." -mtime +"${AGE}")
+
+echo "Deleting inactive users..."
+
+for a in ${USERLIST}; do
+  if ! [[ ${KEEP[*]} =~ "$a" ]]; then
+    echo "Deleting inactive (over ${AGE} days) account and home directory: $a"
+
+    # delete user
+    /usr/bin/dscl . delete "$a" > /dev/null 2>&1
+
+    # delete home folder
+    /bin/rm -r "$a"
+    continue
+  else
+    echo "SKIPPING $a"
+  fi
+done
+
+echo "Cleanup complete"
+exit 0
