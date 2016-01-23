@@ -1,0 +1,18 @@
+#This is an Extension Attribute.
+#This checks to see if the Active Directory trust between OS X and AD is valid.
+#You can create a Smart Group & policy to automatically fix this issue if it's not valid.
+#
+#!/bin/bash
+
+domain=“domain”
+user=“username”
+
+# Can we query a UPN?
+domainAns=`dscl /Active\ Directory/${domain}/All\ Domains -read /Users/${user} dsAttrTypeNative:userPrincipalName`
+if [[ $domainAns =~ "is not valid" ]]; then
+    result="Invalid"
+else
+        result="Valid"
+fi
+
+echo "<result>$result</result>"
