@@ -1,0 +1,5 @@
+#Clears the NVRAM and sets the Startup Disk.
+#
+#!/bin/bash
+nvram -c
+sudo systemsetup -setstartupdisk /Volumes/"Macintosh HD"/System/Library/CoreServices
