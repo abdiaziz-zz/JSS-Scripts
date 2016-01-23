@@ -1,0 +1,9 @@
+#Log into as many computers as you want via Apple Remote Desktop at one time.
+#Run as Root in Apple Remote Desktop
+#
+osascript -e "tell application \"System Events\" to keystroke \”username\””
+osascript -e 'tell application "System Events" to delay 0.5'; \
+osascript -e "tell application \"System Events\" to keystroke tab"
+osascript -e "tell application \"System Events\" to keystroke \”password\””
+osascript -e 'tell application "System Events" to delay 0.5'; \
+osascript -e "tell application \"System Events\" to keystroke return"
