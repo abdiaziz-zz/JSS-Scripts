@@ -1,4 +1,4 @@
-#First boot script used at Normandale Community College
+#First boot script used with Casper Imaging
 
 #Flush Policy History for Computer in the JSS
 /usr/local/jamf/bin/jamf flushPolicyHistory
@@ -116,5 +116,4 @@ if [ -n "$HWType" ]; then
 fi
 fi
 
-#Normandale Community College
 #Information Technology Services
