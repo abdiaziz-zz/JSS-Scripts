@@ -1,0 +1,10 @@
+#This changes the default save location for Microsoft Office 2016 version 15.18 or higher.
+#
+#This a login script that runs as the user.
+#
+#
+#!/bin/sh
+sleep 60
+user=`ls -la /dev/console | cut -d " " -f 4`
+sudo -u $user defaults write /Users/$3/Library/Group\ Containers/UBF8T346G9.Office/com.microsoft.officeprefs.plist DefaultsToLocalOpenSave -bool TRUE
+echo "Default Save Location Changed to On my Mac".
