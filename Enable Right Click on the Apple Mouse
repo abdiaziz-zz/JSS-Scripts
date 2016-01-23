@@ -1,0 +1,11 @@
+#Enables Right Click on the Apple Mighty Mouse for new users.
+#
+#!/bin/sh
+
+for i in `ls -1 "/System/Library/User Template"`; do
+    defaults write "/System/Library/User Template/${i}/Library/Preferences/com.apple.driver.AppleHIDMouse" Button2 -int 2
+    defaults write "/System/Library/User Template/${i}/Library/Preferences/com.apple.driver.AppleBluetoothMultitouch.mouse" MouseButtonMode -string TwoButton
+    defaults write "/System/Library/User Template/${i}/Library/Preferences/com.apple.driver.AppleBluetoothMultitouch.trackpad" TrackpadRightClick -int 1
+done
+
+echo "Secondary Button enabled"
