@@ -1,0 +1,9 @@
+#This is particularly useful in a lab environment that uses Active Directory.
+#
+#This is a logout script that deletes the login keychain to prevent those annoying keychain prompts.
+#
+rm -rf /Users/$3/Library/Keychains/login.keychain
+
+rm -rf /Users/$3/library/keychains/????????-????-????-????-????????????
+
+echo "Deleted"
