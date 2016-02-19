@@ -4,6 +4,19 @@
 #
 #!/bin/bash
 
+#This ensures that this runs only when a machine is on the NCC network. Otherwise this will fail because it failed to reach our internal DC
+
+IP='insert internal server name here'
+ping -c1 -t300 $IP 2>/dev/null 1>/dev/null
+if [ "$?" = 0 ]
+then
+  echo "DC1 found"
+else
+  echo "Not on NCC Network"
+  exit 0
+fi
+
+
 domain=“domain”
 user=“username”
 
