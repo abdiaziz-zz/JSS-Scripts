@@ -1,2 +1,1 @@
-Twitter:
-www.abdiaziz.com
+Hi!
