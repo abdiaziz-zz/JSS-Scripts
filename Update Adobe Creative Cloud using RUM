@@ -1,0 +1,10 @@
+#!/bin/bash
+#This updates ALL applcaitons using Adobe's Remote Update Manager
+
+# If RUM App has not been successfully installed, the script will not run.
+
+if [ ! -f "/usr/local/bin/RemoteUpdateManager" ];then
+    echo "RUM app not installed"
+    exit 0
+fi
+sudo /usr/local/bin/RemoteUpdateManage
