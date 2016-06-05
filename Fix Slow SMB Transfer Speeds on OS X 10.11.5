@@ -1,0 +1,6 @@
+#Run this using the JSS or open terminal and run the following. Restart the OS X client after running the command.
+#Then unmount and remount any SMB shares.
+#This disables SMB signing on OS X.
+
+
+printf "[default]\nsigning_required=no\n" | sudo tee /etc/nsmb.conf >/dev/null
