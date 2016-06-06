@@ -1,0 +1,2 @@
+#!/bin/sh
+networksetup -removepreferredwirelessnetwork en1 "Your Wireless Network Name"
